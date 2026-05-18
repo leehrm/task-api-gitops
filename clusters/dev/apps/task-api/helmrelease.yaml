@@ -1,0 +1,32 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: task-api
+  namespace: task-api
+spec:
+  interval: 1m
+  chart:
+    spec:
+      chart: ./helm/task-api
+      sourceRef:
+        kind: GitRepository
+        name: task-api-platform
+        namespace: flux-system
+      interval: 1m
+  values:
+    image:
+      repository: 519330023984.dkr.ecr.ap-northeast-1.amazonaws.com/task-api
+      tag: "0.2.1"
+      pullPolicy: IfNotPresent
+
+    service:
+      type: ClusterIP
+
+    ingress:
+      enabled: false
+
+    postgresdb:
+      primary:
+        persistence:
+          enabled: true
+          size: 1Gi
